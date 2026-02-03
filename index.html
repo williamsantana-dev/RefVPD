@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Calculadora e tabela VPD de Cultivo Indoor | De Grower pra Grower</title>
+    <meta name="description" content="Aprenda a usar a tabela VPD completa para cultivo indoor. Calculadoras de temperatura e umidade ideal para otimizar a transpiração das suas plantas.">
+    <link rel="canonical" href="https://seusite.com.br/calculadora-vpd">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "O que é VPD no cultivo indoor?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "VPD significa Déficit de Pressão de Vapor. É a medida que combina temperatura e umidade para determinar a taxa de transpiração das plantas."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Qual o VPD ideal para a fase de floração?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Para a fase de floração, o VPD ideal geralmente situa-se entre 1.2 kPa e 1.5 kPa, ajudando a prevenir mofo e aumentando a produção de resina."
+        }
+      }]
+    }
+    </script>
+
+    <style>
+        :root {
+            --primary: #7cb342;
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #ffffff;
+            --border: #333;
+            /* Cores da Tabela VPD */
+            --v-red: #d32f2f;
+            --v-yellow: #fbc02d;
+            --v-green: #7cb342;
+        }
+
+        body.light {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #2d3436;
+            --border: #dfe6e9;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+        header { text-align: center; padding: 50px 0; }
+        header h1 { font-size: 2.5rem; color: var(--primary); margin: 0; }
+
+        .btn-theme {
+            position: fixed; top: 20px; right: 20px;
+            background: var(--primary); border: none;
+            color: white; width: 45px; height: 45px; border-radius: 50%;
+            cursor: pointer; z-index: 1000; font-size: 1.2rem;
+        }
+
+        /* CALCULADORAS */
+        .grid-calcs {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; margin-bottom: 40px;
+        }
+
+        .card-calc {
+            background: var(--card); padding: 25px;
+            border-radius: 15px; border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        input {
+            width: 95%; padding: 12px; margin: 10px 0;
+            border-radius: 8px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text);
+            font-size: 1rem;
+        }
+
+        .res-box {
+            margin-top: 15px; padding: 12px;
+            border-left: 5px solid var(--primary);
+            background: rgba(124, 179, 66, 0.1);
+            font-weight: bold; font-size: 1.1rem;
+        }
+
+        /* TABELA */
+        .wrapper-table {
+            overflow-x: auto; border-radius: 10px;
+            border: 1px solid var(--border); background: var(--card);
+            margin: 15px 0 0 0;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        th, td { padding: 8px 4px; border: 1px solid var(--border); text-align: center; font-size: 0.8rem; font-weight: bold; }
+        .th-sticky { background: var(--primary); color: white; position: sticky; left: 0; }
+        .th-header { background: #333; color: white; }
+
+        /* CORES VPD */
+        .r { background: var(--v-red); color: white; }
+        .y { background: var(--v-yellow); color: #000; }
+        .g { background: var(--v-green); color: white; }
+
+        /* FAQ SECTION */
+        .faq-section, .content-info { margin-top: 50px; background: var(--card); padding: 30px; border-radius: 15px; }
+        .faq-item { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .faq-item h3 { color: var(--primary); margin-bottom: 5px; }
+
+        footer { text-align: center; padding: 40px; opacity: 0.7; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-theme" onclick="document.body.classList.toggle('light')" title="Alternar Tema">🌓</button>
+
+    <main class="container">
+        <header>
+            <h1>Referência VPD</h1>
+            <p>Ajuste a temperatura e umidade para o máximo rendimento.</p>
+        </header>
+
+        <section class="grid-calcs">
+            <article class="card-calc">
+                <h3>🌡️ Temperatura → Umidade</h3>
+                <p>Qual a temperatura da sua tenda?</p>
+                <input type="number" id="tIn" placeholder="Ex: 26" oninput="app.updateRH()">
+                <div id="outRH" class="res-box">Insira a temperatura...</div>
+            </article>
+
+            <article class="card-calc">
+                <h3>💧 Umidade → Temperatura</h3>
+                <p>Qual a umidade atual?</p>
+                <input type="number" id="hIn" placeholder="Ex: 60" oninput="app.updateTemp()">
+                <div id="outT" class="res-box">Insira a umidade...</div>
+            </article>
+        </section>
+
+        <section class="content-info">
+            <h2>Por que o VPD é o segredo dos grandes Growers?</h2>
+            <p>Muitos cultivadores iniciantes focam apenas na umidade, mas o <strong>VPD (Vapor Pressure Deficit)</strong> é o que realmente dita o ritmo da planta. Ele mede o "poder de sucção" do ar.</p>
+            <ul>
+                <li><strong>Crescimento Vegetativo:</strong> Procure um VPD entre 0.8 e 1.0 kPa.</li>
+                <li><strong>Floração:</strong> Um VPD levemente mais alto (1.2 a 1.5 kPa) ajuda a evitar mofo e estimula a resina.</li>
+            </ul>
+            <p>Use a tabela abaixo como referência rápida para manter o clima sempre na zona verde!</p>
+        </section>
+
+        <section>
+            <div class="wrapper-table">
+                <table>
+                    <thead><tr id="hRow"></tr></thead>
+                    <tbody id="bRow"></tbody>
+                </table>
+            </div>
+        </section>
+
+        
+
+        <section class="faq-section">
+            <h2>Perguntas Frequentes sobre VPD (FAQ)</h2>
+            
+            <div class="faq-item">
+                <h3>O que acontece se o VPD estiver muito baixo?</h3>
+                <p>Se o VPD estiver muito baixo (ar muito úmido), a planta para de transpirar. Isso impede que os nutrientes subam pelas raízes, o que pode causar deficiências e aumentar o risco de mofo e fungos.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Como aumentar o VPD?</h3>
+                <p>Para aumentar o VPD, você deve ou aumentar a temperatura ou diminuir a umidade do ambiente utilizando um desumidificador ou aumentando a exaustão.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Qual a diferença entre umidade relativa e VPD?</h3>
+                <p>A umidade relativa mede apenas a água no ar. O VPD mede a "fome" que o ar tem por água, levando em conta a temperatura. É uma métrica muito mais precisa para a saúde das plantas.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Referência de VPD - 2026</p>
+    </footer>
+
+    <script>
+        const app = {
+            // Fórmula Saturation Vapor Pressure (kPa)
+            getSVP: (t) => 0.61078 * Math.exp((17.27 * t) / (t + 237.3)),
+
+            updateRH: () => {
+                const t = parseFloat(document.getElementById('tIn').value);
+                if(isNaN(t)) return;
+                const svp = app.getSVP(t);
+                const rhMin = Math.round((1 - (1.2 / svp)) * 100);
+                const rhMax = Math.round((1 - (0.8 / svp)) * 100);
+                document.getElementById('outRH').innerHTML = `Umidade Alvo: <strong>${rhMin}% a ${rhMax}%</strong>`;
+            },
+
+            updateTemp: () => {
+                const rh = parseFloat(document.getElementById('hIn').value);
+                if(isNaN(rh) || rh <= 0) return;
+                let tMin = null, tMax = null;
+                for(let t=15; t<=38; t+=0.1) {
+                    let vpd = app.getSVP(t) * (1 - (rh/100));
+                    if(vpd >= 0.8 && vpd <= 1.2) {
+                        if(tMin === null) tMin = t;
+                        tMax = t;
+                    }
+                }
+                document.getElementById('outT').innerHTML = tMin 
+                    ? `Temperatura Alvo: <strong>${tMin.toFixed(1)}ºC a ${tMax.toFixed(1)}ºC</strong>`
+                    : "Humidade muito alta para VPD ideal.";
+            },
+
+            renderTable: () => {
+                const hRow = document.getElementById('hRow');
+                const bRow = document.getElementById('bRow');
+                const rhLevels = [95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35];
+                
+                // Header
+                hRow.innerHTML = '<th class="th-header">ºC</th><th class="th-header">ºF</th>';
+                rhLevels.forEach(rh => hRow.innerHTML += `<th class="th-header">${rh}%</th>`);
+
+                // Body (15 a 35 graus)
+                for(let c=15; c<=35; c++) {
+                    let f = (c * 1.8 + 32).toFixed(1);
+                    let row = `<tr><td class="th-sticky">${c}</td><td class="th-sticky">${f}</td>`;
+                    
+                    rhLevels.forEach(rh => {
+                        let vpd = app.getSVP(c) * (1 - (rh/100));
+                        let cls = 'r'; // Perigo (muito baixo ou muito alto)
+                        
+                        // Lógica de cores baseada em estágios comuns
+                        if (vpd >= 0.4 && vpd < 0.8) cls = 'y'; // Propagação / Vegetativo cedo
+                        if (vpd >= 0.8 && vpd <= 1.2) cls = 'g'; // Vegetativo / Flora cedo
+                        if (vpd > 1.2 && vpd <= 1.6) cls = 'y'; // Flora tardia
+                        
+                        row += `<td class="${cls}">${vpd.toFixed(1)}</td>`;
+                    });
+                    bRow.innerHTML += row + `</tr>`;
+                }
+            }
+        };
+
+        app.renderTable();
+    </script>
+</body>
+</html>
